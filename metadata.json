@@ -1,0 +1,6 @@
+{
+  "name": "CINEONEX",
+  "description": "Glassmorphic streaming application prototype, UI kit, API specification, and cross-platform architecture handoff for CINEONEX.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,218 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-display: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    --font-body: "DM Sans", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+    --cx-canvas: #0B081A;
+    --cx-accent: #E11D48;
+  }
+
+  html {
+    font-family: var(--font-body);
+    background-color: var(--cx-canvas);
+    color: #F8FAFC;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Spatial Crystal-Clear Optical Glassmorphism (Vision-grade Frosted Glass) */
+.cx-spatial-shell {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.06) 55%,
+    rgba(255, 255, 255, 0.09) 100%
+  );
+  backdrop-filter: blur(38px) saturate(195%) brightness(1.06);
+  -webkit-backdrop-filter: blur(38px) saturate(195%) brightness(1.06);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 32px 80px -20px rgba(6, 4, 20, 0.72),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.36),
+    inset 1px 0 0 0 rgba(255, 255, 255, 0.16);
+}
+
+.cx-crystal-1 {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.13) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(22px) saturate(185%);
+  -webkit-backdrop-filter: blur(22px) saturate(185%);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow:
+    0 12px 32px -12px rgba(6, 4, 20, 0.50),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.28);
+}
+
+.cx-crystal-2 {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  backdrop-filter: blur(28px) saturate(195%);
+  -webkit-backdrop-filter: blur(28px) saturate(195%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 18px 44px -14px rgba(6, 4, 20, 0.60),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.cx-crystal-3 {
+  background: linear-gradient(
+    145deg,
+    rgba(26, 20, 48, 0.76) 0%,
+    rgba(13, 12, 29, 0.84) 100%
+  );
+  backdrop-filter: blur(44px) saturate(200%);
+  -webkit-backdrop-filter: blur(44px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  box-shadow:
+    0 32px 72px -16px rgba(0, 0, 0, 0.80),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.32);
+}
+
+/* Signature Crimson-Violet Active Pill & Watch CTA Gradient */
+.cx-glow-cta {
+  background: linear-gradient(135deg, #9333EA 0%, #DB2777 52%, #E11D48 100%);
+  box-shadow:
+    0 10px 26px -6px rgba(219, 39, 119, 0.55),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+}
+
+.cx-glow-cta:hover {
+  filter: brightness(1.1);
+}
+
+/* Compositor-only Ambient & Marquee Animations */
+@keyframes cxAuroraFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(28px, -18px, 0) scale(1.07);
+  }
+}
+
+@keyframes cxAuroraDriftReverse {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1.04);
+  }
+  50% {
+    transform: translate3d(-26px, 22px, 0) scale(0.96);
+  }
+}
+
+@keyframes cxKenBurns {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.06) translate3d(-1%, -0.5%, 0);
+  }
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes cxMarqueeScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes cxMarqueeScrollReverse {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.cx-aurora-1 {
+  animation: cxAuroraFloat 16s ease-in-out infinite;
+  will-change: transform;
+}
+
+.cx-aurora-2 {
+  animation: cxAuroraDriftReverse 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+.cx-ken-burns {
+  animation: cxKenBurns 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.cx-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: cxMarqueeScroll 32s linear infinite;
+  will-change: transform;
+}
+
+.cx-marquee-track-reverse {
+  display: flex;
+  width: max-content;
+  animation: cxMarqueeScrollReverse 38s linear infinite;
+  will-change: transform;
+}
+
+.cx-marquee-group:hover .cx-marquee-track,
+.cx-marquee-group:hover .cx-marquee-track-reverse {
+  animation-play-state: paused;
+}
+
+.cx-marquee-fade {
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .cx-marquee-track,
+  .cx-marquee-track-reverse,
+  .cx-aurora-1,
+  .cx-aurora-2,
+  .cx-ken-burns {
+    animation: none !important;
+  }
+}
+
+.cx-scroll-x::-webkit-scrollbar {
+  height: 6px;
+}
+.cx-scroll-x::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 9999px;
+}
+.cx-scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 9999px;
+}
+.cx-scroll-x::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.34);
+}
