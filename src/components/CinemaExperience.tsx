@@ -35,6 +35,7 @@ import {
   MovieReview,
 } from '../data/catalog';
 import { ResilientImage } from './ResilientImage';
+import { SearchOverlay } from './SearchOverlay';
 
 export type AppSection = 'discover' | 'catalog' | 'watchlist' | 'downloads';
 
@@ -86,6 +87,7 @@ export const CinemaExperience: React.FC<CinemaExperienceProps> = ({
   const [movies, setMovies] = useState<MovieItem[]>(MOVIES_CATALOG);
   const [heroIndex, setHeroIndex] = useState(0);
   const [isSideNavCollapsed, setIsSideNavCollapsed] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
@@ -136,6 +138,28 @@ export const CinemaExperience: React.FC<CinemaExperienceProps> = ({
     const t = setTimeout(() => setToastMessage(null), 2800);
     return () => clearTimeout(t);
   }, [toastMessage]);
+
+  useEffect(() => {
+    const handleShortcut = (e: KeyboardEvent) => {
+      if (detailMovieId || playerState || shareMovie) return;
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((open) => !open);
+        return;
+      }
+      if (
+        e.key === '/' &&
+        !isSearchOpen &&
+        !(e.target instanceof HTMLInputElement) &&
+        !(e.target instanceof HTMLTextAreaElement)
+      ) {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleShortcut);
+    return () => window.removeEventListener('keydown', handleShortcut);
+  }, [isSearchOpen, detailMovieId, playerState, shareMovie]);
 
   useEffect(() => {
     const hasActive = downloads.some((d) => d.status === 'downloading');
@@ -440,46 +464,65 @@ export const CinemaExperience: React.FC<CinemaExperienceProps> = ({
             </motion.button>
           </div>
 
-          {/* Segmented Category Tabs with Spring-Gliding Active Pill */}
-          <nav
-            aria-label="Category filter"
-            className="cx-crystal-1 rounded-full p-1 flex items-center gap-1 overflow-x-auto cx-scroll-x max-w-full"
-          >
-            {TOP_CATEGORY_TABS.map((tab) => {
-              const active =
-                tab.id === 'More'
-                  ? section === 'catalog'
-                  : section === 'discover' && selectedGenre === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    if (tab.id === 'More') {
-                      setYearFilter2026(false);
-                      onNavigate('catalog');
-                    } else {
-                      setSelectedGenre(tab.id);
-                      setYearFilter2026(false);
-                      onNavigate('discover');
-                    }
-                  }}
-                  className={`relative min-h-[38px] px-4 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                    active ? 'text-white' : 'text-slate-200/90 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="top-cat-pill"
-                      transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                      className="absolute inset-0 rounded-full cx-glow-cta"
-                    />
-                  )}
-                  <span className="relative z-10">{tab.label}</span>
-                </button>
-              );
-            })}
-          </nav>
+          {/* Segmented Category Tabs + Search Overlay Trigger */}
+          <div className="flex flex-wrap items-center gap-2.5 max-w-full">
+            <nav
+              aria-label="Category filter"
+              className="cx-crystal-1 rounded-full p-1 flex items-center gap-1 overflow-x-auto cx-scroll-x max-w-full"
+            >
+              {TOP_CATEGORY_TABS.map((tab) => {
+                const active =
+                  tab.id === 'More'
+                    ? section === 'catalog'
+                    : section === 'discover' && selectedGenre === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => {
+                      if (tab.id === 'More') {
+                        setYearFilter2026(false);
+                        onNavigate('catalog');
+                      } else {
+                        setSelectedGenre(tab.id);
+                        setYearFilter2026(false);
+                        onNavigate('discover');
+                      }
+                    }}
+                    className={`relative min-h-[38px] px-4 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                      active ? 'text-white' : 'text-slate-200/90 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="top-cat-pill"
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                        className="absolute inset-0 rounded-full cx-glow-cta"
+                      />
+                    )}
+                    <span className="relative z-10">{tab.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Open glassmorphic search overlay"
+              className="h-[46px] px-3.5 rounded-full cx-crystal-2 hover:bg-white/25 text-white flex items-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white shrink-0"
+            >
+              <Search className="w-4 h-4 text-rose-300" aria-hidden="true" />
+              <span className="hidden sm:inline text-xs font-medium text-slate-100">
+                {searchQuery.trim() ? searchQuery : 'Search'}
+              </span>
+              <kbd className="hidden md:inline-flex items-center px-1.5 py-0.5 rounded bg-white/15 text-[10px] font-mono text-slate-200">
+                ⌘K
+              </kbd>
+            </motion.button>
+          </div>
         </header>
 
         {/* DISCOVER VIEW */}
@@ -1095,19 +1138,38 @@ export const CinemaExperience: React.FC<CinemaExperienceProps> = ({
       >
         {/* Top Search & Quick Access Bar */}
         <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search
-              className="w-4 h-4 text-slate-200 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-              aria-hidden="true"
-            />
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
-              aria-label="Search movies"
-              className="w-full h-10 pl-10 pr-3 rounded-full cx-crystal-1 text-xs text-white placeholder:text-slate-300/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E11D48]"
-            />
+          <div className="relative flex-1 min-w-0">
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Open interactive movie search"
+              className="w-full h-10 pl-3.5 pr-3 rounded-full cx-crystal-1 hover:bg-white/15 text-xs text-left flex items-center justify-between gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E11D48]"
+            >
+              <span className="flex items-center gap-2 min-w-0">
+                <Search className="w-4 h-4 text-slate-200 shrink-0" aria-hidden="true" />
+                <span className={`truncate ${searchQuery ? 'text-white font-medium' : 'text-slate-300/80'}`}>
+                  {searchQuery || 'Search...'}
+                </span>
+              </span>
+              {!searchQuery && (
+                <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] font-mono text-slate-300 shrink-0">
+                  ⌘K
+                </kbd>
+              )}
+            </button>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSearchQuery('');
+                }}
+                aria-label="Clear active search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center cursor-pointer"
+              >
+                <X className="w-3 h-3" aria-hidden="true" />
+              </button>
+            )}
           </div>
 
           <button
@@ -1218,6 +1280,19 @@ export const CinemaExperience: React.FC<CinemaExperienceProps> = ({
           </div>
         </div>
       </aside>
+
+      {/* GLASSMORPHIC SEARCH OVERLAY */}
+      <SearchOverlay
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        movies={movies}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        watchlistIds={watchlistIds}
+        onToggleWatchlist={toggleWatchlist}
+        onPlayMovie={handleStartPlayback}
+        onSelectMovie={(movie) => setDetailMovieId(movie.id)}
+      />
 
       {/* MOVIE DETAIL MODAL */}
       <AnimatePresence>
